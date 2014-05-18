@@ -8,7 +8,7 @@ LIBNAME="libzmq.a"
 ROOTDIR=`pwd`
 
 #libsodium
-LIBSODIUM_DIST="${ROOTDIR}/libsodium-ios/libsodium_dist/"
+LIBSODIUM_DIST="/opt/libsodium-ios/"
 echo "Buliding dependency libsodium..."
 cd libsodium-ios
 bash libsodium.sh
@@ -27,9 +27,9 @@ LIBDIR=$( (cd "${LIBDIR}"  && pwd) )
 # Destination directory for build and install
 DSTDIR=${SCRIPTDIR}
 BUILDDIR="${DSTDIR}/libzmq_build"
-DISTDIR="${DSTDIR}/libzmq_dist"
+DISTDIR="/opt/zeromq-ios"
 DISTLIBDIR="${DISTDIR}/lib"
-TARNAME="zeromq-4.0.3"
+TARNAME="zeromq-4.0.4"
 TARFILE=${TARNAME}.tar.gz
 TARURL=http://download.zeromq.org/$TARFILE
 
@@ -137,6 +137,7 @@ do
     ${LIBDIR}/configure \
 	--prefix=${BUILDARCHDIR} \
 	--disable-shared \
+        --enable-shared=no \
 	--enable-static \
 	--host=${HOST}\
 	--with-libsodium=${LIBSODIUM_DIST}
@@ -144,7 +145,8 @@ do
     echo "Building ${LIBNAME} for ${ARCH}..."
     cd ${LIBDIR}/src
     
-    make -j8 V=0
+    #make -j8 V=0
+    make
     make install
 
     LIBLIST+="${BUILDARCHDIR}/lib/${LIBNAME} "
@@ -155,7 +157,7 @@ mkdir -p ${DISTLIBDIR}
 ${LIPO} -create ${LIBLIST} -output ${DISTLIBDIR}/${LIBNAME}
 for ARCH in $ARCHS
 do
-    cp -R $BUILDDIR/$ARCH/include ${DISTDIR}
+    cp -v -R $BUILDDIR/$ARCH/include ${DISTDIR}
     break
 done
 
