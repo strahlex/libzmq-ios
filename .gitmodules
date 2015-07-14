@@ -1,3 +1,0 @@
-[submodule "libsodium-ios"]
-	path = libsodium-ios
-	url = git@github.com:drewcrawford/libsodium-ios.git
